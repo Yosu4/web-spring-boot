@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  mysqldb:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: password
+    networks:
+      - spring-boot-mysql-network
+
+  web-service:
+    depends_on:
+       - mysqldb
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-boot-mysql-network
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb/db
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+
+networks:
+  spring-boot-mysql-network:
+    driver: bridge
