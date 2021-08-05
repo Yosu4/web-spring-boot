@@ -17,13 +17,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -42,10 +46,13 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@WebMvcTest(CustomerController.class)
-@ExtendWith(SpringExtension.class)
+//@RunWith(SpringRunner.class)
+//@WebMvcTest(CustomerController.class)
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -63,19 +70,25 @@ class CustomerControllerTest {
     void getCustomerSaldo() throws Exception{
         Account account = new Account(1L, 555010L, 1001, 10000l);
         List<Account> accounts = Arrays.asList(account);
-        //Mockito.when(accountRepository.findByAccountNumber(555010L)).thenReturn(accounts);
-        BDDMockito.given(this.accountRepository.findByAccountNumber(555010L)).willReturn(accounts);
+        Mockito.when(accountRepository.findByAccountNumber(555010L)).thenReturn(accounts);
+        //BDDMockito.given(this.accountRepository.findByAccountNumber(555010L)).willReturn(accounts);
 
         Customer customer = new Customer(1L, 1001, "Kurniawan");
         List<Customer> customers = Arrays.asList(customer);
-        //Mockito.when(customerRepository.findByCustomerNumber(1001)).thenReturn(customers);
-        BDDMockito.given(this.customerRepository.findByCustomerNumber(1001)).willReturn(customers);
+        Mockito.when(customerRepository.findByCustomerNumber(1001)).thenReturn(customers);
+        //BDDMockito.given(this.customerRepository.findByCustomerNumber(1001)).willReturn(customers);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/account/555010")
-                    .accept(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform( MockMvcRequestBuilders
+                .get("/account/{account_number}", 555010L)
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.balance").value("15000"));
+                .andExpect(status().isOk());
+
+//        mockMvc.perform(MockMvcRequestBuilders.get("/account/555010")
+//                    .accept(MediaType.APPLICATION_JSON_VALUE))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.balance").value("15000"));
 
         //assertEquals("Kurniawan", customerRepository.getById(1L).getName());
         //AccountBalanceResponse response = parseResponse
