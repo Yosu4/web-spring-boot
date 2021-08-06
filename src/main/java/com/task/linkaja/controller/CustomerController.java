@@ -24,17 +24,17 @@ public class CustomerController {
 
     //get balance
     @GetMapping("/{account_number}")
-    public AccountBalanceResponse getCustomerSaldo(@PathVariable Long account_number) {
+    public ResponseEntity<?> getCustomerSaldo(@PathVariable Long account_number) {
         try {
-            return transactionService.getCustomerSaldo(account_number).getBody();
+            return transactionService.getCustomerSaldo(account_number);
         } catch (NoSuchElementException e) {
-            return new AccountBalanceResponse();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     //create new Customer
     @PostMapping("/addCustomer")
-    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody InputCustomerRequest inputCustomerRequest) {
+    public ResponseEntity<?> createCustomer(@Valid @RequestBody InputCustomerRequest inputCustomerRequest) {
         try {
             return new ResponseEntity<>(transactionService.createCustomer(inputCustomerRequest), HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
@@ -44,7 +44,7 @@ public class CustomerController {
 
     //create new Customer
     @PostMapping("/{from_account_number}/transfer")
-    public ResponseEntity<TransferBalanceResponse> transferBalance(@PathVariable Long from_account_number,
+    public ResponseEntity<?> transferBalance(@PathVariable Long from_account_number,
                                                                    @Valid @RequestBody TransferBalance transferBalance) {
         try {
             return transactionService.transferBalanceService(from_account_number, transferBalance);
