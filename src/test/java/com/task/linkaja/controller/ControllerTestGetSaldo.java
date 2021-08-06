@@ -30,6 +30,11 @@ public class ControllerTestGetSaldo {
     @MockBean
     TransactionService transactionService;
 
+    // Cara ini jangan di campur dengan unit test yang satunya
+    // Karena MockBean transactionService tidak di set di cara yang satunya
+    // Sehingga defatultnya null,
+    // dan yang di baca adalah transactionService terlebih dahulu dibanding accountRepository dan customerRepository
+    // Maka engga bisa sampai kebaca di file Repository
     @Test
     @DisplayName("GET /Saldo Customer Kurniawan 10000")
     void getCustomerSaldo() throws Exception{
