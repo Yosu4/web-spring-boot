@@ -12,6 +12,35 @@ Implementasi aplikasi Link Aja di laptop
 8. Mysql perlu membuat connection terlebih dahulu kemudian create database agar kemudian dapat di hubungkan dengan Intellij
 9. Table nantinya dibuat agar value account_number dan customer_number tidak boleh ada yang sama
 10. Setting MySql dispringBoot dapat set di application.properties
+11. Extract zip dari springboot project
+12. Arahkan command prompt pada directory springboot project tadi
+13. Ketikkan "docker-compose up mysqldb" (tanpa petik), tunggu hingga proses berhasil
+14. Buka window command yang baru lagi dengan directory yang sama
+15. Ketikkan "docker-compose up web-service" (tanpa petik), tunggu hingga aplikasi springboot berjalan
+16. API sudah dapat digunakan untuk testing dengan spect API :
+## Menambahkan data customer :
+curl --location --request POST 'localhost:8080/account/addCustomer/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "account_number": 555012,
+    "customer_number": 1006,
+    "balance": 20000,
+    "name": "Kurniawan"
+}'
+
+## Get balance
+curl --location --request GET 'localhost:8080/account/{account_number}'
+
+## Transfer Balance
+curl --location --request POST 'localhost:8080/account/{from_account_number}/transfer' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "to_account_number":{to_account_number},
+    "amount":1000
+}'
+
+
+
 
 Happy Coding!!!
 

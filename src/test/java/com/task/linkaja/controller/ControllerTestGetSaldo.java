@@ -30,6 +30,9 @@ public class ControllerTestGetSaldo {
     @MockBean
     TransactionService transactionService;
 
+    // ###############
+    // # READ ME!!!! #
+    // ###############
     // Cara ini jangan di campur dengan unit test yang satunya
     // Karena MockBean transactionService tidak di set di cara yang satunya
     // Sehingga defatultnya null,
@@ -38,7 +41,7 @@ public class ControllerTestGetSaldo {
     @Test
     @DisplayName("GET /Saldo Customer Kurniawan 10000")
     void getCustomerSaldo() throws Exception{
-        AccountBalanceResponse balanceResponse = new AccountBalanceResponse(555010L, "Kurniawan", 10000l);
+        AccountBalanceResponse balanceResponse = new AccountBalanceResponse(555010L, "Kurniawan", 10000L);
         doReturn(new ResponseEntity<>(balanceResponse, HttpStatus.OK)).when(transactionService).getCustomerSaldo(555010L);
 
         mockMvc.perform(get("/account/{account_number}", 555010L))

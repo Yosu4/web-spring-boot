@@ -77,7 +77,7 @@ public class TransactionService implements ITransactionService {
         }
 
         // check from Balance less than 0
-        Long fromBalance = fromAccount.getBalance() - transferBalance.getAmount();
+        long fromBalance = fromAccount.getBalance() - transferBalance.getAmount();
         if(fromBalance < 0){
             log.error("Balance AC "+ from_account_number +" less than 0");
             balanceResponse.setMessage("Balance AC "+ from_account_number +" less than 0");

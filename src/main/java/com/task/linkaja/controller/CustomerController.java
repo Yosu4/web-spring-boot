@@ -1,13 +1,11 @@
 package com.task.linkaja.controller;
 
 import com.task.linkaja.model.request.TransferBalance;
-import com.task.linkaja.model.response.AccountBalanceResponse;
-import com.task.linkaja.model.Customer;
 import com.task.linkaja.model.request.InputCustomerRequest;
-import com.task.linkaja.model.response.TransferBalanceResponse;
 import com.task.linkaja.service.ITransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +32,12 @@ public class CustomerController {
 
     //create new Customer
     @PostMapping("/addCustomer")
+    @ResponseBody
     public ResponseEntity<?> createCustomer(@Valid @RequestBody InputCustomerRequest inputCustomerRequest) {
         try {
-            return new ResponseEntity<>(transactionService.createCustomer(inputCustomerRequest), HttpStatus.CREATED);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", "application/json");
+            return new ResponseEntity<>(transactionService.createCustomer(inputCustomerRequest), headers, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
